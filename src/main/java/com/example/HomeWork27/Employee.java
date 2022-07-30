@@ -19,6 +19,9 @@ public class Employee {
         this.surname = surname;
     }
 
+    public String getFullName() {
+        return surname + " " + name;
+    }
     public String getName() {
         return name;
     }
