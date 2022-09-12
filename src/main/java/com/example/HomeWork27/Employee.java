@@ -19,6 +19,9 @@ public class Employee {
         this.surname = surname;
     }
 
+    public String getFullName() {
+        return surname + " " + name;
+    }
     public String getName() {
         return name;
     }
@@ -38,6 +41,14 @@ public class Employee {
     @Override
     public int hashCode() {
         return Objects.hash(surname, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "surname='" + surname + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
 

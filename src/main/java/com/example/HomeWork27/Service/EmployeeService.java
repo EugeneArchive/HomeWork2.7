@@ -6,13 +6,12 @@ import com.example.HomeWork27.Exteption.EmployeeNotFoundException;
 import com.example.HomeWork27.Exteption.EmployeeStorageIsFullException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeService {
     private static final int LIMIT = 10;
-    private final List<Employee> employees;
+    private final Map<String, Employee> employees;
 
     List<Employee> Employees = new ArrayList<>(List.of(
             new Employee("Serebrov", "Eugene"),
@@ -29,36 +28,35 @@ public class EmployeeService {
     private int size = 10;
 
     public EmployeeService() {
-        this.employees = new ArrayList<>();
+        this.employees = new HashMap<>();
     }
 
     public Employee addEmployees(String name, String surname) {
         Employee employee = new Employee(name, surname);
-        if (employees.contains(employee)) {
-            throw new EmployeeAlreadyAddedException("");
+        if (employees.containsKey(employee.getFullName())) {
+            throw new EmployeeAlreadyAddedException("Сотрудник уже есть в базе данных. Добавление невозможно");
         }
         if (employees.size() < LIMIT) {
-            employees.add(employee);
+            employees.put(employee.getFullName(), employee);
             return employee;
         }
-        throw new EmployeeStorageIsFullException("");
+        throw new EmployeeStorageIsFullException("Список сотрудников заполнен. Добавление нового сотрудника невозможно");
     }
 
     public Employee findEmployees(String name, String surname) {
         Employee employee = new Employee(name, surname);
-        if (employees.contains(employee)) {
+        if (employees.containsKey(employee.getFullName())) {
             throw new EmployeeNotFoundException("");
         }
-        return employee;
+        return employees.get(employee.getFullName());
     }
 
     public Employee removeEmployees(String name, String surname) {
         Employee employee = new Employee(name, surname);
-        if (!employees.contains(employee)) {
-            throw new EmployeeNotFoundException("");
+        if (!employees.containsKey(employee.getFullName())) {
+            throw new EmployeeNotFoundException("Поиск завершен. Данного сотрудника нет в базе данных.");
         }
-        employees.remove(employee);
-        return employee;
+        return employees.remove(employee.getFullName());
     }
 
 
@@ -118,7 +116,11 @@ public class EmployeeService {
         return Employees;
     }
 
-    public List<Employee> getAll() {
-        return new ArrayList<>(employees);
+//    public List<Employee> getAll() {
+//        return new ArrayList<>(employees);
+//    }
+
+    public Collection<Employee> findAll() {
+        return Collections.unmodifiableCollection(employees.values());
     }
 }
